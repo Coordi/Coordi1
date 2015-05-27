@@ -103,7 +103,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void CompBtClicked(){
-
+        Toast.makeText(getApplicationContext(), "입력란을 다 채워주세요.", Toast.LENGTH_LONG).show();
     }
 
     @Override
