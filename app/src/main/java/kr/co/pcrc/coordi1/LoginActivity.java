@@ -1,5 +1,6 @@
 package kr.co.pcrc.coordi1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -39,8 +40,6 @@ public class LoginActivity extends ActionBarActivity {
 
     private final long	FINSH_INTERVAL_TIME    = 2000;
     private long		backPressedTime        = 0;
-
-    private String return_msg;
 
     private String html = "";
     private Handler mHandler;
@@ -91,8 +90,14 @@ public class LoginActivity extends ActionBarActivity {
         });
         enrollBt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 EnrollBtClicked();
+            }
+        });
+        compBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CompBtClicked();
             }
         });
     }
@@ -133,7 +138,6 @@ public class LoginActivity extends ActionBarActivity {
 
         enroll_view = true;
     }
-
     public void CompBtClicked(){
         Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
     }
@@ -166,7 +170,6 @@ public class LoginActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -211,6 +214,16 @@ public class LoginActivity extends ActionBarActivity {
 
         public void run() {
             Toast.makeText(LoginActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
+
+            if (html.equals("Success")) {
+                Toast.makeText(getApplicationContext(),
+                        "로그인에 성공하였습니다.", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }else {
+                Toast.makeText(getApplicationContext(),
+                        "이메일 또는 비밀번호가 옳바르지 않습니다.", Toast.LENGTH_LONG).show();
+            }
         }
 
     };
