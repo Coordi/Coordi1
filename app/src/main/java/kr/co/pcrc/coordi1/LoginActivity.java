@@ -1,9 +1,9 @@
 package kr.co.pcrc.coordi1;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends Activity {
     View loginLayout;
     View enrollLayout;
 
@@ -139,7 +139,19 @@ public class LoginActivity extends ActionBarActivity {
         enroll_view = true;
     }
     public void CompBtClicked(){
-        Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
+        String NewEmail = newEmail.getText().toString();
+        String NewPw = newPW.getText().toString();
+        String NewName = newName.getText().toString();
+        String NewBirth = newBirth.getText().toString();
+
+        if(NewEmail.equals("") || NewPw.equals("") || NewName.equals("")||NewBirth.equals("")) {
+            Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
+        }else {
+            PrintWriter out = new PrintWriter(networkWriter, true);
+            String message = NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth;
+            out.println(message);
+        }
+
     }
 
     @Override
@@ -220,6 +232,7 @@ public class LoginActivity extends ActionBarActivity {
                         "로그인에 성공하였습니다.", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
             }else {
                 Toast.makeText(getApplicationContext(),
                         "이메일 또는 비밀번호가 옳바르지 않습니다.", Toast.LENGTH_LONG).show();
