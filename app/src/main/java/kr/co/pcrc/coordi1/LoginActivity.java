@@ -69,24 +69,7 @@ public class LoginActivity extends ActionBarActivity {
 
         mHandler = new Handler();
 
-
-//        try {
-//
-//            setSocket(ip, port);
-//        } catch (Exception e1) {
-//            e1.printStackTrace();
-//        }
-
         checkUpdate.start();
-
-
-//        Intent temp = new Intent(getApplicationContext(), SocClient.class);
-//        startActivity(temp);
-
-       //mClient = new SocClient();
-        //Thread myThread = new Thread(mClient);
-
-        //final Context context = this;
 
         loginLayout = (View) findViewById(R.id.loginLayout);
         enrollLayout = (View) findViewById(R.id.enrollLayout);
@@ -122,6 +105,7 @@ public class LoginActivity extends ActionBarActivity {
             String message = Email + "/" + Pw;
             out.println(message);
         }
+
         /*
         if (Email.equals("admin@naver.com")) {
             if (Pw.equals("1q2w3e")) {
@@ -140,7 +124,6 @@ public class LoginActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
         } // 서버 전
         */
-
 
     }
 
