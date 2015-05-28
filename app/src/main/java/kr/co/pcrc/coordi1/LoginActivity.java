@@ -1,14 +1,23 @@
 package kr.co.pcrc.coordi1;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class LoginActivity extends ActionBarActivity {
     View loginLayout;
@@ -33,17 +42,49 @@ public class LoginActivity extends ActionBarActivity {
 
     private String return_msg;
 
-    private SocClient mClient;
+    private String html = "";
+    private Handler mHandler;
+
+    private Socket socket;
+
+    private BufferedReader networkReader;
+    private BufferedWriter networkWriter;
+    private String ip = "192.168.123.1"; // IP
+    private int port = 4444; // PORT번호
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mHandler = new Handler();
+
+
+//        try {
+//
+//            setSocket(ip, port);
+//        } catch (Exception e1) {
+//            e1.printStackTrace();
+//        }
+
+        checkUpdate.start();
+
+
 //        Intent temp = new Intent(getApplicationContext(), SocClient.class);
 //        startActivity(temp);
 
-        mClient = new SocClient();
-        Thread myThread = new Thread(mClient);
+       //mClient = new SocClient();
+        //Thread myThread = new Thread(mClient);
 
         //final Context context = this;
 
@@ -76,6 +117,12 @@ public class LoginActivity extends ActionBarActivity {
     public void LoginBtClicked() {
         String Email = id.getText().toString();
         String Pw = pw.getText().toString();
+        if (Email != null || Pw != null) {
+            PrintWriter out = new PrintWriter(networkWriter, true);
+            String message = Email + "/" + Pw;
+            out.println(message);
+        }
+        /*
         if (Email.equals("admin@naver.com")) {
             if (Pw.equals("1q2w3e")) {
                 String message = Email + "/" + Pw;
@@ -92,6 +139,8 @@ public class LoginActivity extends ActionBarActivity {
         {
             Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
         } // 서버 전
+        */
+
 
     }
 
@@ -103,7 +152,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void CompBtClicked(){
-        Toast.makeText(getApplicationContext(), "입력란을 다 채워주세요.", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -148,5 +197,51 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private Thread checkUpdate = new Thread() {
+        public  int init = 0;
+        public void run() {
+            try {
+                if(init == 0)
+                {
+                    setSocket(ip, port);
+                    init  = 1;
+                }
+               // setSocket(ip, port);
+                String line;
+                Log.w("ChattingStart", "Start Thread");
+                while (true) {
+                    Log.w("Chatting is running", "chatting is running");
+                    line = networkReader.readLine();
+                    html = line;
+                    mHandler.post(showUpdate);
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    };
+
+    private Runnable showUpdate = new Runnable() {
+
+        public void run() {
+            Toast.makeText(LoginActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
+        }
+
+    };
+
+    public void setSocket(String ip, int port) throws Exception {
+
+        try {
+            socket = new Socket(ip, port);
+            networkWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            networkReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+
     }
 }
