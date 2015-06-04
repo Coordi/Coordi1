@@ -3,13 +3,12 @@
     package="kr.co.pcrc.coordi1" >
 
     <application
-        android:allowBackup="true"
+        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:label="Coordi0"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         <activity
             android:name=".LoginActivity"
-            android:label="Coordi0" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -17,7 +16,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="Coordi0">
+            android:label="@string/app_name">
         </activity>
     </application>
 

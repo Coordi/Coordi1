@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -51,15 +50,16 @@ public class LoginActivity extends Activity {
     private String ip = "192.168.123.1"; // IP
     private int port = 4444; // PORT번호
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//  ~For MainActivity Test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,30 +105,36 @@ public class LoginActivity extends Activity {
     public void LoginBtClicked() {
         String Email = id.getText().toString();
         String Pw = pw.getText().toString();
-        if (Email != null || Pw != null) {
-            PrintWriter out = new PrintWriter(networkWriter, true);
-            String message = Email + "/" + Pw;
-            out.println(message);
-        }
 
-        /*
-        if (Email.equals("admin@naver.com")) {
-            if (Pw.equals("1q2w3e")) {
-                String message = Email + "/" + Pw;
-                mClient.send(message);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+//        ~Main Test 용
 
-            else {
-                Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
-            }
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
-        } // 서버 전
-        */
+//        if (Email != null || Pw != null) {
+//            PrintWriter out = new PrintWriter(networkWriter, true);
+//            String message = Email + "/" + Pw;
+//            out.println(message);
+//        }
+        // ~주석 풀 것!
+
+
+//        if (Email.equals("admin@naver.com")) {
+//            if (Pw.equals("1q2w3e")) {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//
+//            else {
+//                Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//        else
+//        {
+//            Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
+//        } // 서버 전
+
 
     }
 
