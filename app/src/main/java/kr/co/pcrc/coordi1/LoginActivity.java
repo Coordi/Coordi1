@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -50,15 +51,15 @@ public class LoginActivity extends Activity {
     private String ip = "192.168.123.1"; // IP
     private int port = 4444; // PORT번호
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        try {
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 //  ~For MainActivity Test
 
     @Override
@@ -67,7 +68,6 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         mHandler = new Handler();
-
         checkUpdate.start();
 
         loginLayout = (View) findViewById(R.id.loginLayout);
@@ -101,43 +101,43 @@ public class LoginActivity extends Activity {
             }
         });
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void LoginBtClicked() {
         String Email = id.getText().toString();
         String Pw = pw.getText().toString();
 
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//        startActivity(intent);
+//        finish();
 //        ~Main Test 용
 
-//        if (Email != null || Pw != null) {
-//            PrintWriter out = new PrintWriter(networkWriter, true);
-//            String message = Email + "/" + Pw;
-//            out.println(message);
-//        }
+        if (Email != null || Pw != null) {
+            PrintWriter out = new PrintWriter(networkWriter, true);
+            String message = Email + "/" + Pw;
+            out.println(message);
+        }
         // ~주석 풀 것!
-
-
-//        if (Email.equals("admin@naver.com")) {
-//            if (Pw.equals("1q2w3e")) {
-//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//
-//            else {
-//                Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
-//            }
-//        }
-//        else
-//        {
-//            Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
-//        } // 서버 전
-
-
     }
-
     public void EnrollBtClicked(){
         loginLayout.setVisibility(View.INVISIBLE);
         enrollLayout.setVisibility(View.VISIBLE);
@@ -159,7 +159,6 @@ public class LoginActivity extends Activity {
         }
 
     }
-
     @Override
     public void onBackPressed() {
         long tempTime        = System.currentTimeMillis();
@@ -182,28 +181,6 @@ public class LoginActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private Thread checkUpdate = new Thread() {
         public  int init = 0;
         public void run() {
@@ -215,9 +192,9 @@ public class LoginActivity extends Activity {
                 }
                // setSocket(ip, port);
                 String line;
-                Log.w("ChattingStart", "Start Thread");
+                Log.w("Start", "Start Thread");
                 while (true) {
-                    Log.w("Chatting is running", "chatting is running");
+                    Log.w("running", "chatting is running");
                     line = networkReader.readLine();
                     html = line;
                     mHandler.post(showUpdate);
@@ -229,14 +206,15 @@ public class LoginActivity extends Activity {
     };
 
     private Runnable showUpdate = new Runnable() {
-
         public void run() {
+            String Email = id.getText().toString();
             Toast.makeText(LoginActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
 
             if (html.equals("Success")) {
                 Toast.makeText(getApplicationContext(),
                         "로그인에 성공하였습니다.", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("login_email", Email);
                 startActivity(intent);
                 finish();
             }else {
@@ -248,7 +226,6 @@ public class LoginActivity extends Activity {
     };
 
     public void setSocket(String ip, int port) throws Exception {
-
         try {
             socket = new Socket(ip, port);
             networkWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
