@@ -27,30 +27,30 @@ public class MainActivity extends Activity {
     private final long	FINSH_INTERVAL_TIME    = 2000;
     private long		backPressedTime        = 0;
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mainDrawerLayout;
+    private ListView mainDrawerList;
+    private ActionBarDrawerToggle mainDrawerToggle;
 
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private String[] mPlanetTitles;
+    private CharSequence mainDrawerTitle;
+    private CharSequence currentTitle;
+    private String[] mainMenuTitles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        currentTitle = mainDrawerTitle = getTitle();
+        mainMenuTitles = getResources().getStringArray(R.array.menu_array);
+        mainDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mainDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mainDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mainDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mainMenuTitles));
+        mainDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,24 +58,24 @@ public class MainActivity extends Activity {
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(
+        mainDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
+                mainDrawerLayout,      /* DrawerLayout object */
                 R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                getActionBar().setTitle(currentTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                getActionBar().setTitle(mainDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mainDrawerLayout.setDrawerListener(mainDrawerToggle);
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -93,8 +93,8 @@ public class MainActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        boolean drawerOpen = mainDrawerLayout.isDrawerOpen(mainDrawerList);
+        menu.findItem(R.id.action_profile).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -102,12 +102,12 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mainDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
         switch(item.getItemId()) {
-            case R.id.action_websearch:
+            case R.id.action_profile:
                 // create intent to perform web search for this planet
                 Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
                 intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
@@ -142,15 +142,15 @@ public class MainActivity extends Activity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mainDrawerList.setItemChecked(position, true);
+        setTitle(mainMenuTitles[position]);
+        mainDrawerLayout.closeDrawer(mainDrawerList);
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
+        currentTitle = title;
+        getActionBar().setTitle(currentTitle);
     }
 
     /**
@@ -162,14 +162,14 @@ public class MainActivity extends Activity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        mainDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        mainDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     /**
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
             int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
+            String planet = getResources().getStringArray(R.array.menu_array)[i];
 
             int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
                     "drawable", getActivity().getPackageName());

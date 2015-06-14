@@ -3,7 +3,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <string-array name="planets_array">
+    <string-array name="menu_array">
         <item>Hot Coordi</item>
         <item>My Coordi</item>
         <item>Categories</item>
@@ -12,6 +12,6 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_websearch">Web search</string>
+    <string name="action_profile">Personal Settings</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
 </resources>
