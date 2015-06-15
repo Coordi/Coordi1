@@ -11,26 +11,21 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Locale;
 
 public class MainActivity extends Activity {
     private final long	FINSH_INTERVAL_TIME    = 2000;
@@ -56,15 +51,15 @@ public class MainActivity extends Activity {
     private String ip = "192.168.123.1"; // IP
     private int port = 4444; // PORT번호
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +98,6 @@ public class MainActivity extends Activity {
                 getActionBar().setTitle(currentTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
-
             public void onDrawerOpened(View drawerView) {
                 getActionBar().setTitle(mainDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -115,7 +109,21 @@ public class MainActivity extends Activity {
             selectItem(0);
         }
     }
+    @Override
+    public void onBackPressed() {
+        long tempTime        = System.currentTimeMillis();
+        long intervalTime    = tempTime - backPressedTime;
 
+        if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
+            moveTaskToBack(true);
+            finish();
+            android.os.Process.killProcess(android.os.Process.myPid());
+        } else {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -155,40 +163,11 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    /* The click listner for ListView in the navigation drawer */
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-    private void selectItem(int position) {
-        // update the menu_main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        // update selected item and title, then close the drawer
-        mainDrawerList.setItemChecked(position, true);
-        setTitle(mainMenuTitles[position]);
-        mainDrawerLayout.closeDrawer(mainDrawerList);
-    }
     @Override
     public void setTitle(CharSequence title) {
         currentTitle = title;
         getActionBar().setTitle(currentTitle);
     }
-
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -202,45 +181,28 @@ public class MainActivity extends Activity {
         mainDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    /**
-     * Fragment that appears in the "content_frame", shows a planet
-     */
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
-
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
+    /* The click listner for ListView in the navigation drawer */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.menu_array)[i];
-
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
-            return rootView;
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
         }
     }
+    private void selectItem(int position) {
 
-    @Override
-    public void onBackPressed() {
-        long tempTime        = System.currentTimeMillis();
-        long intervalTime    = tempTime - backPressedTime;
+        // update the menu_main content by replacing fragments
+        Fragment fragment = new ContentFragment();
+        Bundle args = new Bundle();
+        args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
 
-        if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
-            moveTaskToBack(true);
-            finish();
-            android.os.Process.killProcess(android.os.Process.myPid());
-        } else {
-            backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.",
-                    Toast.LENGTH_SHORT).show();
-        }
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        // update selected item and title, then close the drawer
+        mainDrawerList.setItemChecked(position, true);
+        setTitle(mainMenuTitles[position]);
+        mainDrawerLayout.closeDrawer(mainDrawerList);
     }
 
     private Thread checkUpdate = new Thread() {
@@ -268,7 +230,6 @@ public class MainActivity extends Activity {
     };
 
     private Runnable showUpdate = new Runnable() {
-
         public void run() {
             Toast.makeText(MainActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
 
@@ -283,7 +244,6 @@ public class MainActivity extends Activity {
                         "이메일 또는 비밀번호가 옳바르지 않습니다.", Toast.LENGTH_LONG).show();
             }
         }
-
     };
 
     public void setSocket(String ip, int port) throws Exception {

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -51,15 +50,15 @@ public class LoginActivity extends Activity {
     private String ip = "192.168.123.1"; // IP
     private int port = 4444; // PORT번호
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 //  ~For MainActivity Test
 
     @Override
@@ -126,16 +125,18 @@ public class LoginActivity extends Activity {
         String Email = id.getText().toString();
         String Pw = pw.getText().toString();
 
-//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//        startActivity(intent);
-//        finish();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
 //        ~Main Test 용
 
-        if (Email != null || Pw != null) {
-            PrintWriter out = new PrintWriter(networkWriter, true);
-            String message = Email + "/" + Pw;
-            out.println(message);
-        }
+//        if (Email.equals("") || Pw.equals("")) {
+//            Toast.makeText(getApplicationContext(), "이메일 또는 패스워드를 확인하세요.", Toast.LENGTH_LONG).show();
+//        }else {
+//            PrintWriter out = new PrintWriter(networkWriter, true);
+//            String message = "1/" + Email + "/" + Pw;
+//            out.println(message);
+//        }
         // ~주석 풀 것!
     }
     public void EnrollBtClicked(){
@@ -154,7 +155,7 @@ public class LoginActivity extends Activity {
             Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
         }else {
             PrintWriter out = new PrintWriter(networkWriter, true);
-            String message = NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth;
+            String message = "2/" + NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth;
             out.println(message);
         }
 
