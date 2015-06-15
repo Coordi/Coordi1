@@ -114,11 +114,9 @@ public class LoginActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -127,17 +125,18 @@ public class LoginActivity extends Activity {
         String Pw = pw.getText().toString();
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("login_email", Email);
         startActivity(intent);
         finish();
 //        ~Main Test 용
 
-        if (Email.equals("") || Pw.equals("")) {
-            Toast.makeText(getApplicationContext(), "이메일 또는 패스워드를 확인하세요.", Toast.LENGTH_LONG).show();
-        }else {
-            PrintWriter out = new PrintWriter(networkWriter, true);
-            String message = "1/" + Email + "/" + Pw;
-            out.println(message);
-        }
+//        if (Email.equals("") || Pw.equals("")) {
+//            Toast.makeText(getApplicationContext(), "이메일 또는 패스워드를 확인하세요.", Toast.LENGTH_LONG).show();
+//        }else {
+//            PrintWriter out = new PrintWriter(networkWriter, true);
+//            String message = "1/" + Email + "/" + Pw;
+//            out.println(message);
+//        }
         // ~주석 풀 것!
     }
     public void EnrollBtClicked(){
@@ -149,6 +148,7 @@ public class LoginActivity extends Activity {
     public void CompBtClicked(){
         String NewEmail = newEmail.getText().toString();
         String NewPw = newPW.getText().toString();
+        String RePw = rePW.getText().toString();
         String NewName = newName.getText().toString();
         String NewBirth = newBirth.getText().toString();
         String NewStyle = newStyle.getText().toString();
@@ -157,6 +157,8 @@ public class LoginActivity extends Activity {
 
         if(NewEmail.equals("") || NewPw.equals("") || NewName.equals("")||NewBirth.equals("")) {
             Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
+        }else if (!NewPw.equals(RePw)){
+            Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
         }else {
             PrintWriter out = new PrintWriter(networkWriter, true);
             String message = "2/" + NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth
@@ -210,7 +212,6 @@ public class LoginActivity extends Activity {
             }
         }
     };
-
     private Runnable showUpdate = new Runnable() {
         public void run() {
             String Email = id.getText().toString();
@@ -224,18 +225,19 @@ public class LoginActivity extends Activity {
                 startActivity(intent);
                 finish();
             }else if(html.equals("Enrolled")) {
-                onBackPressed();
                 Toast.makeText(getApplicationContext(), "회원가입에 성공하였습니다.",
                         Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("login_email", Email);
+                startActivity(intent);
+                finish();
             }
             else {
                 Toast.makeText(getApplicationContext(),
                         "이메일 또는 비밀번호가 옳바르지 않습니다.", Toast.LENGTH_LONG).show();
             }
         }
-
     };
-
     public void setSocket(String ip, int port) throws Exception {
         try {
             socket = new Socket(ip, port);

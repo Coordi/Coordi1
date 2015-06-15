@@ -19,9 +19,6 @@ public class ContentFragment extends Fragment {
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
 
-//    ImageView ivIcon;
-//    TextView tvItemName;
-
     public ContentFragment() {
 
     }
@@ -30,9 +27,6 @@ public class ContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_layout_list, container, false);
-
-//        int i = getArguments().getInt(ARG_MENU_NUMBER);
-//        String menu = getResources().getStringArray(R.array.menu_array)[i];
 
         arrayList = new ArrayList<String>();
         arrayList.add("안");
@@ -74,7 +68,6 @@ public class ContentFragment extends Fragment {
             }
         });
 
-//        getActivity().setTitle(menu);
         return rootView;
     }
 }

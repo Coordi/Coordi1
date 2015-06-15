@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,7 +26,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MainActivity extends Activity {
@@ -40,7 +40,12 @@ public class MainActivity extends Activity {
     private CharSequence currentTitle;
     private String[] mainMenuTitles;
 
-    Intent login_intent;
+    View profileModify;
+    View mainFrame;
+
+    Button proModifyBt;
+
+    public boolean profile_view = false;
 
     private String html = "";
     private Handler mHandler;
@@ -70,31 +75,24 @@ public class MainActivity extends Activity {
         mHandler = new Handler();
         checkUpdate.start();
 
+        profileModify = (View) findViewById(R.id.modify_profile);
+        mainFrame = (View) findViewById(R.id.content_frame);
+        proModifyBt = (Button) findViewById(R.id.Profile_Modify_Bt);
+
         currentTitle = mainDrawerTitle = getTitle();
         mainMenuTitles = getResources().getStringArray(R.array.menu_array);
         mainDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mainDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        // set a custom shadow that overlays the menu_main content when the drawer opens
         mainDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        // set up the drawer's list view with items and click listener
         mainDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mainMenuTitles));
         mainDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        mainDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mainDrawerLayout,      /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {
+        mainDrawerToggle = new ActionBarDrawerToggle(this, mainDrawerLayout, R.drawable.ic_drawer,
+                R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(currentTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -106,23 +104,40 @@ public class MainActivity extends Activity {
         };
         mainDrawerLayout.setDrawerListener(mainDrawerToggle);
 
+        proModifyBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onProModifyBtClicked();
+            }
+        });
+
         if (savedInstanceState == null) {
             selectItem(0);
         }
+    }
+    public void onProModifyBtClicked() {
+
     }
     @Override
     public void onBackPressed() {
         long tempTime        = System.currentTimeMillis();
         long intervalTime    = tempTime - backPressedTime;
 
-        if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
-            moveTaskToBack(true);
-            finish();
-            android.os.Process.killProcess(android.os.Process.myPid());
-        } else {
-            backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.",
-                    Toast.LENGTH_SHORT).show();
+        if(profile_view) {
+            profileModify.setVisibility(View.INVISIBLE);
+            mainFrame.setVisibility(View.VISIBLE);
+
+            profile_view = false;
+        }else {
+            if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
+                moveTaskToBack(true);
+                finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+            } else {
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
     @Override
@@ -148,21 +163,30 @@ public class MainActivity extends Activity {
         // Handle action buttons
         switch(item.getItemId()) {
             case R.id.profile_settings:
-                login_intent = getIntent();
+                Intent login_intent = getIntent();
                 String Email = login_intent.getStringExtra("login_email");
+//                Toast.makeText(getApplicationContext(), Email, Toast.LENGTH_LONG).show();
 
-                if (Email != null) {
-                    PrintWriter out = new PrintWriter(networkWriter, true);
-                    String message = Email;
-                    out.println(message);
-                }
+                profileModify.setVisibility(View.VISIBLE);
+                mainFrame.setVisibility(View.INVISIBLE);
+                profile_view = true;
+
+//                if (Email != null) {
+//                    PrintWriter out = new PrintWriter(networkWriter, true);
+//                    String message = Email;
+//                    out.println(message);
+//                }
+                break;
             case R.id.action_logout:
+                Toast.makeText(getApplicationContext(), "Log out..", Toast.LENGTH_LONG).show();
                 Intent intentLogout = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intentLogout);
                 finish();
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
     @Override
     public void setTitle(CharSequence title) {
