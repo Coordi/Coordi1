@@ -5,33 +5,76 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class ContentFragment extends Fragment {
     public static final String ARG_MENU_NUMBER = "menu_number";
 
-    ImageView ivIcon;
-    TextView tvItemName;
+    private ListView listView;
+    private ArrayList<String> arrayList;
+    private ArrayAdapter<String> adapter;
+
+//    ImageView ivIcon;
+//    TextView tvItemName;
 
     public ContentFragment() {
-        // Empty constructor required for fragment subclasses
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_layout_one, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_layout_list, container, false);
 
-        int i = getArguments().getInt(ARG_MENU_NUMBER);
-        String menu = getResources().getStringArray(R.array.menu_array)[i];
+//        int i = getArguments().getInt(ARG_MENU_NUMBER);
+//        String menu = getResources().getStringArray(R.array.menu_array)[i];
 
-        ivIcon = (ImageView) rootView.findViewById(R.id.frag1_icon);
-        tvItemName = (TextView) rootView.findViewById(R.id.frag1_text);
-        tvItemName.setText(menu);
-        ivIcon.setImageDrawable(rootView.getResources().getDrawable(R.drawable.action_profile));
+        arrayList = new ArrayList<String>();
+        arrayList.add("안");
+        arrayList.add("녕");
+        arrayList.add("하");
+        arrayList.add("십");
+        arrayList.add("니");
+        arrayList.add("까");
+        arrayList.add("환");
+        arrayList.add("영");
+        arrayList.add("합");
+        arrayList.add("니");
+        arrayList.add("다");
+        arrayList.add(".");
+        arrayList.add("안");
+        arrayList.add("녕");
+        arrayList.add("하");
+        arrayList.add("십");
+        arrayList.add("니");
+        arrayList.add("까");
+        arrayList.add("환");
+        arrayList.add("영");
+        arrayList.add("합");
+        arrayList.add("니");
+        arrayList.add("다");
+        arrayList.add(".");
 
-        getActivity().setTitle(menu);
+        adapter = new ArrayAdapter<String>(super.getActivity(), android.R.layout.simple_list_item_1, arrayList);
+
+        listView = (ListView) rootView.findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String str = (String) adapter.getItem(position);
+                Toast.makeText(getView().getContext(), str, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        getActivity().setTitle(menu);
         return rootView;
     }
 }

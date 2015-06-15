@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -51,15 +52,15 @@ public class MainActivity extends Activity {
     private String ip = "192.168.123.1"; // IP
     private int port = 4444; // PORT번호
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        try {
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +182,6 @@ public class MainActivity extends Activity {
         mainDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -189,17 +189,29 @@ public class MainActivity extends Activity {
         }
     }
     private void selectItem(int position) {
-
-        // update the menu_main content by replacing fragments
         Fragment fragment = new ContentFragment();
         Bundle args = new Bundle();
-        args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
+        switch (position) {
+            case 1:
+                args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
+                break;
+            case 2:
+                args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
+                break;
+            case 3:
+                args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
+                break;
+            case 4:
+                args.putInt(ContentFragment.ARG_MENU_NUMBER, position);
+                break;
+            default:
+                break;
+        }
 
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        // update selected item and title, then close the drawer
         mainDrawerList.setItemChecked(position, true);
         setTitle(mainMenuTitles[position]);
         mainDrawerLayout.closeDrawer(mainDrawerList);
@@ -231,7 +243,7 @@ public class MainActivity extends Activity {
 
     private Runnable showUpdate = new Runnable() {
         public void run() {
-            Toast.makeText(MainActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
 
             if (html.equals("Success")) {
                 Toast.makeText(getApplicationContext(),

@@ -30,6 +30,9 @@ public class LoginActivity extends Activity {
     EditText rePW;
     EditText newName;
     EditText newBirth;
+    EditText newStyle;
+    EditText newTall;
+    EditText newWeight;
 
     Button loginBt;
     Button enrollBt;
@@ -78,6 +81,9 @@ public class LoginActivity extends Activity {
         rePW = (EditText) findViewById(R.id.re_PW);
         newName = (EditText) findViewById(R.id.new_Name);
         newBirth = (EditText) findViewById(R.id.new_Birth);
+        newStyle = (EditText) findViewById(R.id.new_style);
+        newTall = (EditText) findViewById(R.id.new_tall);
+        newWeight = (EditText) findViewById(R.id.new_weight);
         loginBt = (Button) findViewById(R.id.LoginBt);
         enrollBt = (Button) findViewById(R.id.EnrollBt);
         compBt=(Button) findViewById(R.id.Comp_Bt);
@@ -102,18 +108,13 @@ public class LoginActivity extends Activity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -130,13 +131,13 @@ public class LoginActivity extends Activity {
         finish();
 //        ~Main Test 용
 
-//        if (Email.equals("") || Pw.equals("")) {
-//            Toast.makeText(getApplicationContext(), "이메일 또는 패스워드를 확인하세요.", Toast.LENGTH_LONG).show();
-//        }else {
-//            PrintWriter out = new PrintWriter(networkWriter, true);
-//            String message = "1/" + Email + "/" + Pw;
-//            out.println(message);
-//        }
+        if (Email.equals("") || Pw.equals("")) {
+            Toast.makeText(getApplicationContext(), "이메일 또는 패스워드를 확인하세요.", Toast.LENGTH_LONG).show();
+        }else {
+            PrintWriter out = new PrintWriter(networkWriter, true);
+            String message = "1/" + Email + "/" + Pw;
+            out.println(message);
+        }
         // ~주석 풀 것!
     }
     public void EnrollBtClicked(){
@@ -150,12 +151,16 @@ public class LoginActivity extends Activity {
         String NewPw = newPW.getText().toString();
         String NewName = newName.getText().toString();
         String NewBirth = newBirth.getText().toString();
+        String NewStyle = newStyle.getText().toString();
+        String NewTall = newTall.getText().toString();
+        String NewWeight = newWeight.getText().toString();
 
         if(NewEmail.equals("") || NewPw.equals("") || NewName.equals("")||NewBirth.equals("")) {
             Toast.makeText(getApplicationContext(), "입력란을 모두 채워주세요. ", Toast.LENGTH_LONG).show();
         }else {
             PrintWriter out = new PrintWriter(networkWriter, true);
-            String message = "2/" + NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth;
+            String message = "2/" + NewEmail + "/" + NewPw + "/" + NewName + "/" + NewBirth
+                    + "/" + NewStyle + "/" + NewTall + "/" + NewWeight;
             out.println(message);
         }
 
@@ -209,7 +214,7 @@ public class LoginActivity extends Activity {
     private Runnable showUpdate = new Runnable() {
         public void run() {
             String Email = id.getText().toString();
-            Toast.makeText(LoginActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(LoginActivity.this, "Coming word: " + html, Toast.LENGTH_SHORT).show();
 
             if (html.equals("Success")) {
                 Toast.makeText(getApplicationContext(),
@@ -218,7 +223,12 @@ public class LoginActivity extends Activity {
                 intent.putExtra("login_email", Email);
                 startActivity(intent);
                 finish();
-            }else {
+            }else if(html.equals("Enrolled")) {
+                onBackPressed();
+                Toast.makeText(getApplicationContext(), "회원가입에 성공하였습니다.",
+                        Toast.LENGTH_LONG).show();
+            }
+            else {
                 Toast.makeText(getApplicationContext(),
                         "이메일 또는 비밀번호가 옳바르지 않습니다.", Toast.LENGTH_LONG).show();
             }
